@@ -1,0 +1,10 @@
+model:
+  modelId: anthropic.claude-v2
+  region: us-east-1
+  contentType: application/json
+  accept: application/json
+  parameters:
+    max_tokens_to_sample: 200
+    temperature: 0.7
+    top_k: 250
+    top_p: 1
