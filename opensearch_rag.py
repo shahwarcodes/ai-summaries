@@ -7,10 +7,15 @@ from opensearchpy import OpenSearch, helpers
 from sentence_transformers import SentenceTransformer
 import numpy as np
 import json
+import os 
 
 # Configuration constants
 INDEX_NAME = "ticket-history"
 EMBEDDING_DIM = 384  # Dimension for MiniLM embeddings
+
+OPENSEARCH_PASSWORD = os.getenv("OPENSEARCH_PASSWORD")
+OPENSEARCH_HOST = os.getenv("OPENSEARCH_HOST")
+OPENSEARCH_USERNAME = os.getenv("OPENSEARCH_USERNAME")
 
 # Initialize sentence transformer model for generating embeddings
 model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
@@ -23,7 +28,7 @@ def connect_opensearch():
     """
     return OpenSearch(
         hosts=[{"host": "localhost", "port": 9200}],  # Change if running remotely
-        http_auth=("admin", "Cradle2Grave@"),         # Use credentials if configured
+        http_auth=(OPENSEARCH_USERNAME, OPENSEARCH_PASSWORD),         # Use credentials if configured
         use_ssl=False,
         verify_certs=False
     )
