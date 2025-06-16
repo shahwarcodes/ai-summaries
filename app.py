@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from bedrock_client import BedrockClient
+from opensearch_rag import retrieve_context
 
 app = Flask(__name__)
 bedrock = BedrockClient("config.yaml")
@@ -18,7 +19,15 @@ def summarize():
             return jsonify({"error": "Missing 'message' in request body"}), 400
 
         # Claude uses Anthropic-style prompts
-        prompt = f"""\n\nHuman: Summarize this customer issue in one line:\n"{message}"\n\nAssistant:"""
+        context = retrieve_context(message)
+        context_text = "\n".join(f"- {c}" for c in context)
+
+        prompt = f"""\n\nHuman: The following are past support tickets from this customer:
+                {context_text}
+                New message:
+                "{message}"
+                Summarize the customer's issue in one line.\n\nAssistant:"""
+
         summary = bedrock.generate_response(prompt)
 
         return jsonify({"summary": summary})
@@ -27,4 +36,5 @@ def summarize():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    print("🚀 Flask running on http://0.0.0.0:5001")
+    app.run(host="0.0.0.0", port=5001, debug=True)

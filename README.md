@@ -119,4 +119,4 @@ python -m unittest test_bedrock_client.py
 
 ## License
 
-[Your chosen license]
+[TBD]
